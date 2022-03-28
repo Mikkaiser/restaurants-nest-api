@@ -60,10 +60,11 @@ export class RestaurantsService {
     async create(restaurant: Restaurant) : Promise<Restaurant> {
 
         const location = await APIFeatures.getRestaurantLocation(restaurant.address);
-        console.log(location);
+        
+        console.log(location)
+        const data = Object.assign(restaurant, { location });
 
-
-        return await this.restaurantModel.create(restaurant);
+        return await this.restaurantModel.create(data);
     }
 
     async update(id: string, restaurant: Restaurant) : Promise<Restaurant> {

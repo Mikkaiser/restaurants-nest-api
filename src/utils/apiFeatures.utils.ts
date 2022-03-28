@@ -1,4 +1,5 @@
 const nodeGeoCoder = require('node-geocoder');
+import { Location } from "../restaurants/schemas/location.schema";
 
 export default class APIFeatures {
     static async getRestaurantLocation(address: any) {
@@ -10,10 +11,11 @@ export default class APIFeatures {
                 formatter: null
             }
 
+            
             const geoCoder = nodeGeoCoder(options);
             const loc = await geoCoder.geocode(address);
-
-            const location = {
+            
+            const location: Location = {
                 type: 'Point',
                 coordinates: [loc[0].longitude, loc[0].latitude],
                 formattedAddress: loc[0].formattedAddress,

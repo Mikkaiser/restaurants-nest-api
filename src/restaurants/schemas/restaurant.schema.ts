@@ -1,4 +1,5 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
+import { Location } from "./location.schema";
 
 
 export enum Category {
@@ -30,6 +31,9 @@ export class Restaurant {
 
     @Prop()
     images?: object[];
+
+    @Prop({ type: Object, ref: 'Location' })
+    location?: Location
 
 }
 
