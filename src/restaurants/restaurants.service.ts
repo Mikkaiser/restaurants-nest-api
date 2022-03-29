@@ -78,4 +78,22 @@ export class RestaurantsService {
         return this.restaurantModel.findByIdAndDelete(id);
     }
 
+    async uploadImages(id: string, files: Array<Express.Multer.File>) {
+        const images = await APIFeatures.upload(files);
+
+        const restaurant = await this.restaurantModel.findByIdAndUpdate(
+            id,
+            {
+                images: images as Object[],
+            },
+            {
+                new: true,
+                runValidators: true
+            }
+        )
+
+        return restaurant;
+
+    }
+
 }

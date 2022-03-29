@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Put, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Put, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { UpdateRestaurantDto } from './dto/update-restaurant.dto';
 import { RestaurantsService } from './restaurants.service';
@@ -56,8 +56,11 @@ export class RestaurantsController {
         @Param('id') id : string,
         @UploadedFiles() files: Array<Express.Multer.File>
     ) {
-        console.log(id)
-        console.log(files)
+
+        await this.restaurantsService.findById(id);
+
+        const res = await this.restaurantsService.uploadImages(id, files)
+        return res;
     }
     
 }
