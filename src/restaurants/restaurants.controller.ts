@@ -40,13 +40,18 @@ export class RestaurantsController {
 
     @Delete(':id')
     async delete(@Param('id') id: string): Promise<{deleted: Boolean}> {
-        await this.restaurantsService.findById(id);
+        const restaurant = await this.restaurantsService.findById(id);
 
-        const restaurant = this.restaurantsService.delete(id);
+        let areImagesDeleted = await this.restaurantsService.deleteImages(restaurant.images);
 
-        if(restaurant) {
+        if(areImagesDeleted) {
+            this.restaurantsService.delete(id);
             return {deleted: true}
         }
+        else {
+            return { deleted: false }
+        }
+
     }
 
 

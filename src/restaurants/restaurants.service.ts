@@ -96,4 +96,9 @@ export class RestaurantsService {
 
     }
 
+    async deleteImages(images) {
+        const res = await APIFeatures.deleteImages(images);
+        return res;
+    }
+
 }
