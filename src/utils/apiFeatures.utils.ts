@@ -1,5 +1,6 @@
 const nodeGeoCoder = require('node-geocoder');
 import { NotAcceptableException } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
 import { S3 } from "aws-sdk";
 import { resolve } from "path";
 import { Location } from "../restaurants/schemas/location.schema";
@@ -40,7 +41,7 @@ export default class APIFeatures {
 
         return new Promise((resolve, reject) => {
             const s3 = new S3({
-                accessKeyId: process.env.AWS_ACCESS_KEY,
+                accessKeyId: process.env.AWS_ACCESS_KEY_ID,
                 secretAccessKey: process.env.AWS_SECRET_KEY
             });
 
@@ -71,9 +72,10 @@ export default class APIFeatures {
 
     static async deleteImages(images){
         const s3 = new S3({
-            accessKeyId: process.env.AWS_SECURITY_KEY,
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
             secretAccessKey: process.env.AWS_SECRET_KEY
         });
+
 
         let imagesKeys = images.map((image) => {
             return {
@@ -92,7 +94,7 @@ export default class APIFeatures {
         }
 
         return new Promise((resolve, reject) => {
-           s3.deleteObjects(params, (err, data) => {
+           s3.deleteObjects(params, function (err, data) {
              if(err) {
                 console.log(err);
                 reject(false);
@@ -102,5 +104,15 @@ export default class APIFeatures {
              }
            });
         });
+    }
+
+    static async assignJwtToken(
+        userId: string,
+        jwtService: JwtService
+    ): Promise<string> {
+        const payload = { id: userId };
+        const token = await jwtService.sign(payload);
+
+        return token;
     }
 }

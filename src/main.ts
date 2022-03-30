@@ -1,5 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
+import { eventNames } from 'process';
 import { AppModule } from './app.module';
 
 async function bootstrap() {

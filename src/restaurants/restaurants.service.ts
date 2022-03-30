@@ -13,8 +13,6 @@ export class RestaurantsService {
         private restaurantModel: mongoose.Model<Restaurant>
     ) {}
 
-
-
     async findAll(query: Query) : Promise<Restaurant[]> {
 
         //Pagination Logic
