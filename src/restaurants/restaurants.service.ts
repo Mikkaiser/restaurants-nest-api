@@ -58,7 +58,7 @@ export class RestaurantsService {
         return restaurant;
     }
 
-    async create(restaurant: Restaurant, user: User) : Promise<Restaurant> {
+    async create(restaurant: Restaurant, user: any) : Promise<Restaurant> {
 
         const location = await APIFeatures.getRestaurantLocation(restaurant.address);
         

@@ -32,7 +32,7 @@ export default class APIFeatures {
             return location;
         }
         catch (error) {
-            console.log(error.message)
+            throw new Error(error)
         }
     }
 
@@ -83,8 +83,6 @@ export default class APIFeatures {
             }
         });
 
-        console.log(imagesKeys)
-
         const params = {
             Bucket: `${process.env.AWS_S3_BUCKET_NAME}`,
             Delete: {
@@ -96,7 +94,6 @@ export default class APIFeatures {
         return new Promise((resolve, reject) => {
            s3.deleteObjects(params, function (err, data) {
              if(err) {
-                console.log(err);
                 reject(false);
              }
              else {

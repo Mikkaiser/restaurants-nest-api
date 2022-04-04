@@ -10,9 +10,6 @@ export enum UserRoles {
 @Schema()
 export class User {
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId })
-    _id: mongoose.Schema.Types.ObjectId;
-
     @Prop()
     name: string;
 

@@ -1,6 +1,8 @@
-import { IsEmail, IsNotEmpty, IsString, MinLength } from "class-validator";
+import { IsEmail, IsEmpty, IsNotEmpty, IsString, MinLength } from "class-validator";
+import mongoose from "mongoose";
 
 export class SignUpDto {
+
     @IsString()
     @IsNotEmpty()
     readonly name: string;
