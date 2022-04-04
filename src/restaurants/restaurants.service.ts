@@ -4,6 +4,9 @@ import mongoose from 'mongoose';
 import { Restaurant } from './schemas/restaurant.schema';
 import { Query } from 'express-serve-static-core';
 import APIFeatures from 'src/utils/apiFeatures.utils';
+import { CurrentUser } from '../auth/decorators/current-user.decorator';
+import { User } from '../auth/schemas/user.schema';
+
 
 @Injectable()
 export class RestaurantsService {
@@ -55,11 +58,11 @@ export class RestaurantsService {
         return restaurant;
     }
 
-    async create(restaurant: Restaurant) : Promise<Restaurant> {
+    async create(restaurant: Restaurant, user: User) : Promise<Restaurant> {
 
         const location = await APIFeatures.getRestaurantLocation(restaurant.address);
         
-        const data = Object.assign(restaurant, { location });
+        const data = Object.assign(restaurant, {user: user._id ,location });
 
         return await this.restaurantModel.create(data);
     }
@@ -91,7 +94,6 @@ export class RestaurantsService {
         )
 
         return restaurant;
-
     }
 
     async deleteImages(images) {
