@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import { Types } from "aws-sdk/clients/acm";
 import mongoose from "mongoose";
+import { Document } from "mongoose";
 
 export enum UserRoles {
     ADMIN='admin',
@@ -8,7 +8,7 @@ export enum UserRoles {
 }
 
 @Schema()
-export class User {
+export class User extends Document {
 
     @Prop()
     name: string;
