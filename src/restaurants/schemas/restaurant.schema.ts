@@ -10,7 +10,9 @@ export enum Category {
     FINE_DINNING='Fine Dinning',
 }
 
-@Schema()
+@Schema({
+    timestamps: true
+})
 export class Restaurant {
 
     @Prop()
