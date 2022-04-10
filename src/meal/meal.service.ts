@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose from 'mongoose';
 import { Restaurant } from '../restaurants/schemas/restaurant.schema';
@@ -6,7 +6,6 @@ import { User } from '../auth/schemas/user.schema';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
 import { Meal } from './schemas/meal.schema';
-import { NotFoundError } from 'rxjs';
 
 @Injectable()
 export class MealService {
@@ -19,7 +18,8 @@ export class MealService {
     private restaurantModel: mongoose.Model<Restaurant>,
   ) {}
 
-  async create(meal: Meal, user: User) : Promise<Meal> {
+  async create(meal: CreateMealDto, user: User) : Promise<Meal> {
+    
     const data = Object.assign(meal, { user: user._id });
 
     const restaurant = await this.restaurantModel.findById(meal.restaurant);
@@ -27,26 +27,51 @@ export class MealService {
     if(!restaurant)
       throw new NotFoundException('Restaurant not found with this ID')
 
+    if(restaurant.user.toString() !== user._id.toString())
+      throw new ForbiddenException('You cannot add a meal to this restaurant')
+
     const mealCreated = await this.mealModel.create(data);
 
-    //continue
+    restaurant.menu.push(mealCreated.id);
 
+    await restaurant.save();
 
+    return mealCreated;
   }
 
-  findAll() {
-    return `This action returns all meal`;
+  async findAll() : Promise<Meal[]> {
+    return await this.mealModel.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} meal`;
+  async findAllByRestaurant(restaurantId: string) : Promise<Meal[]> {
+    return await this.mealModel.find({ restaurant : restaurantId });
   }
 
-  update(id: number, updateMealDto: UpdateMealDto) {
-    return `This action updates a #${id} meal`;
+  async findById(id: string) : Promise<Meal> {
+  
+    const isValidId = mongoose.isValidObjectId(id);
+
+    if(!isValidId)
+      throw new BadRequestException('Wrong mongoose ID error');
+    
+    
+    const mealFound = await this.mealModel.findById(id);
+
+    if(!mealFound)
+      throw new NotFoundException('Meal not found.');
+
+    return mealFound;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} meal`;
-  }
+  // findOne(id: number) {
+  //   return `This action returns a #${id} meal`;
+  // }
+
+  // update(id: number, updateMealDto: UpdateMealDto) {
+  //   return `This action updates a #${id} meal`;
+  // }
+
+  // remove(id: number) {
+  //   return `This action removes a #${id} meal`;
+  // }
 }
