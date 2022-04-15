@@ -63,15 +63,17 @@ export class MealService {
     return mealFound;
   }
 
-  // findOne(id: number) {
-  //   return `This action returns a #${id} meal`;
-  // }
+  async updateById(id: string, meal: UpdateMealDto) : Promise<Meal> {
+    return await this.mealModel.findByIdAndUpdate(id, meal, {
+      new: true,
+      runValidators: true
+    });
+  }
 
-  // update(id: number, updateMealDto: UpdateMealDto) {
-  //   return `This action updates a #${id} meal`;
-  // }
+  async deleteById(id: string) : Promise<{ deleted: Boolean }> {
+    const meal = await this.mealModel.findByIdAndDelete(id);
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} meal`;
-  // }
+    if(meal) return { deleted: true }
+    return { deleted: false };
+  }
 }

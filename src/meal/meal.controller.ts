@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Put, ForbiddenException } from '@nestjs/common';
 import { MealService } from './meal.service';
 import { CreateMealDto } from './dto/create-meal.dto';
 import { UpdateMealDto } from './dto/update-meal.dto';
@@ -35,13 +35,35 @@ export class MealController {
     return await this.mealService.findById(id);
   }
 
-  // @Patch(':id')
-  // update(@Param('id') id: string, @Body() updateMealDto: UpdateMealDto) {
-  //   return this.mealService.update(+id, updateMealDto);
-  // }
+  @Put(':id')
+  @UseGuards(AuthGuard())
+  async updateById(
+    @Param('id') id: string,
+    @Body() mealUpdateDto: UpdateMealDto,
+    @CurrentUser() user: User
+  ) : Promise<Meal> {
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.mealService.remove(+id);
-  // }
+    const meal = await this.mealService.findById(id);
+
+    if(meal.user.toString() !== user._id.toString())
+      throw new ForbiddenException('You cannot update a meal to this restaurant')
+
+    return await this.mealService.updateById(id, mealUpdateDto);
+  }
+
+  @Delete(':id')
+  @UseGuards(AuthGuard())
+  async deleteById(
+    @Param('id') id: string,
+    @CurrentUser() user: User
+  ) : Promise<{ deleted: Boolean }> {
+
+    const meal = await this.mealService.findById(id);
+
+    if(meal.user.toString() !== meal.user.toString())
+      throw new ForbiddenException('You cannot delete a meal to this restaurant');
+
+    return this.mealService.deleteById(id);
+
+  }
 }
