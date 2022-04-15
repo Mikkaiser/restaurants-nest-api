@@ -26,6 +26,8 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
+A project made with the NestJS framework, a API built with MongoDB Database, and Mongoose ORM!
+
 ## Installation
 
 ```bash
