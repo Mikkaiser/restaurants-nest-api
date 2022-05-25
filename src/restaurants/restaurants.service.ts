@@ -80,6 +80,7 @@ export class RestaurantsService {
     }
 
     async uploadImages(id: string, files: Array<Express.Multer.File>) {
+        console.log(files);
         const images = await APIFeatures.upload(files);
 
         const restaurant = await this.restaurantModel.findByIdAndUpdate(
