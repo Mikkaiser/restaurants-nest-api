@@ -212,5 +212,25 @@ describe('RestaurantsService', () => {
     })
   })
 
+  describe('deleteImages', () => {
+    it('should delete restaurant images from S3 Bucket', async () => {
+      const mockImages = [
+        {
+          "ETag": "\"7047246c606a7f07b31a98fb24aab8ed\"",
+          "Location": "https://nestjs-restaurants-api.s3.amazonaws.com/restaurants/image_1653446257183.png",
+          "key": "restaurants/image_1653446257183.png",
+          "Key": "restaurants/image_1653446257183.png",
+          "Bucket": "nestjs-restaurants-api"
+        }
+      ]
+
+      jest.spyOn(APIFeatures, 'deleteImages')
+        .mockResolvedValueOnce(true);
+
+      const result = await service.deleteImages(mockImages);
+      expect(result).toBe(true);
+    })
+  })
+
 });
 
