@@ -1,37 +1,36 @@
-import { Prop, Schema, SchemaFactory } from "@nestjs/mongoose";
-import mongoose from "mongoose";
-import { User } from "../../auth/schemas/user.schema";
-import { Restaurant } from "../../restaurants/schemas/restaurant.schema";
-
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import mongoose from 'mongoose';
+import { User } from '../../auth/schemas/user.schema';
+import { Restaurant } from '../../restaurants/schemas/restaurant.schema';
 
 export enum Category {
-    SOUPS = 'Soups',
-    SALADS = 'Salads',
-    SANDWICHES = 'Sandwiches',
-    PASTA = 'Pasta'
+  SOUPS = 'Soups',
+  SALADS = 'Salads',
+  SANDWICHES = 'Sandwiches',
+  PASTA = 'Pasta',
 }
 
 @Schema({
-    timestamps: true
+  timestamps: true,
 })
 export class Meal {
-    @Prop()
-    name:string;
+  @Prop()
+  name: string;
 
-    @Prop()
-    description:string;
+  @Prop()
+  description: string;
 
-    @Prop()
-    price: number;
+  @Prop()
+  price: number;
 
-    @Prop()
-    category: Category;
+  @Prop()
+  category: Category;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant' })
-    restaurant: Restaurant;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Restaurant' })
+  restaurant: string;
 
-    @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
-    user: User;
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'User' })
+  user: User;
 }
 
 export const MealSchema = SchemaFactory.createForClass(Meal);
