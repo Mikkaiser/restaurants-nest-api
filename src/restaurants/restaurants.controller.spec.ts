@@ -1,3 +1,4 @@
+import { ForbiddenException } from '@nestjs/common';
 import { CreateRestaurantDto } from './dto/create-restaurant.dto';
 import { Test, TestingModule } from '@nestjs/testing';
 import { RestaurantsService } from './restaurants.service';
@@ -5,6 +6,29 @@ import { RestaurantsController } from './restaurants.controller';
 import { PassportModule } from '@nestjs/passport';
 import { User, UserRoles } from '../auth/schemas/user.schema';
 import { Category } from './schemas/restaurant.schema';
+
+const mockImages = [
+  {
+    ETag: '"7047246c606a7f07b31a98fb24aab8ed"',
+    Location:
+      'https://nestjs-restaurants-api.s3.amazonaws.com/restaurants/image_1653446257183.png',
+    key: 'restaurants/image_1653446257183.png',
+    Key: 'restaurants/image_1653446257183.png',
+    Bucket: 'nestjs-restaurants-api',
+  },
+];
+
+const mockFiles = [
+  {
+    fieldname: 'files',
+    originalname: 'image.png',
+    encoding: '7bit',
+    mimetype: 'image/png',
+    buffer:
+      '<Buffer 89 50 4e 47 0d 0a 1a 0a 00 00 00 0d 49 48 44 52 00 00 01 62 00 00 00 a6 08 06 00 00 00 e0 52 85 6c 00 00 00 04 73 42 49 54 08 08 08 08 7c 08 64 88 00 ... 21153 more bytes>',
+    size: 21203,
+  },
+];
 
 const mockRestaurant = {
   _id: '6259d584a0ad9310af33220f',
@@ -42,6 +66,9 @@ const mockRestaurantService = {
   create: jest.fn().mockResolvedValue(mockRestaurant),
   findById: jest.fn().mockResolvedValue(mockRestaurant),
   update: jest.fn().mockResolvedValue(mockRestaurant),
+  delete: jest.fn().mockResolvedValue(mockRestaurant),
+  deleteImages: jest.fn().mockResolvedValue(true),
+  uploadImages: jest.fn(),
 };
 
 describe('RestaurantsController', () => {
@@ -132,6 +159,64 @@ describe('RestaurantsController', () => {
       expect(service.update).toHaveBeenCalled();
       expect(result).toEqual(restaurant);
       expect(result.name).toEqual(restaurant.name);
+    });
+
+    it('should throw a forbidden exception', async () => {
+      const user = {
+        ...mockUser,
+        _id: '6259d59da0ad9310af332213',
+      };
+
+      const result = controller.update(
+        mockRestaurant._id,
+        mockRestaurant as any,
+        user as any,
+      );
+
+      expect(result).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('deleteRestaurant', () => {
+    it('should delete restaurant by ID', async () => {
+      const result = await controller.delete(
+        mockRestaurant._id,
+        mockUser as any,
+      );
+
+      expect(service.deleteImages).toHaveBeenCalled();
+      expect(service.delete).toHaveBeenCalled();
+      expect(result).toEqual({ deleted: true });
+    });
+
+    it('should not delete restaurant because images are not deleted', async () => {
+      jest.spyOn(service, 'deleteImages').mockResolvedValueOnce(false);
+
+      const result = await controller.delete(
+        mockRestaurant._id,
+        mockUser as any,
+      );
+
+      expect(service.deleteImages).toHaveBeenCalled();
+      expect(result).toEqual({ deleted: false });
+    });
+  });
+
+  describe('uploadFiles', () => {
+    it('should upload files and returned the updated restaurant', async () => {
+      const updatedRestaurant = { ...mockRestaurant, images: mockImages };
+
+      jest
+        .spyOn(service, 'uploadImages')
+        .mockResolvedValueOnce(updatedRestaurant as any);
+
+      const result = await controller.uploadFiles(
+        mockRestaurant._id,
+        mockFiles as any,
+      );
+
+      expect(service.uploadImages).toHaveBeenCalled();
+      expect(result).toEqual(updatedRestaurant);
     });
   });
 });
