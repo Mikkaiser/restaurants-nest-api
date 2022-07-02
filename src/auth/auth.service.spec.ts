@@ -1,4 +1,4 @@
-import { ConflictException } from '@nestjs/common';
+import { ConflictException, NotFoundException } from '@nestjs/common';
 import APIFeatures from '../utils/apiFeatures.utils';
 import { JwtModule } from '@nestjs/jwt';
 import { getModelToken } from '@nestjs/mongoose';
@@ -6,6 +6,7 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { Model } from 'mongoose';
 import { AuthService } from './auth.service';
 import { User, UserRoles } from './schemas/user.schema';
+import * as bcrypt from 'bcryptjs';
 
 const mockUser = {
   _id: '6259d584a0ad9310af33220f',
@@ -18,6 +19,7 @@ const token = 'jwtToken';
 
 const mockRepository = {
   create: jest.fn().mockResolvedValue(mockUser),
+  findOne: jest.fn().mockResolvedValue(mockUser),
 };
 
 describe('AuthService', () => {
@@ -71,6 +73,42 @@ describe('AuthService', () => {
       const result = service.signUp({ name, email, password });
 
       await expect(result).rejects.toThrow(ConflictException);
+    });
+  });
+
+  describe('login', () => {
+    it('should login user and return a token', async () => {
+      jest.spyOn(model, 'findOne').mockImplementationOnce(
+        () =>
+          ({
+            select: jest.fn().mockResolvedValueOnce(mockUser),
+          } as any),
+      );
+
+      const { email, password } = mockUser;
+
+      jest.spyOn(bcrypt, 'compare').mockResolvedValueOnce(true);
+      jest.spyOn(APIFeatures, 'assignJwtToken').mockResolvedValueOnce(token);
+
+      const result = await service.login({ email, password });
+
+      expect(result).toEqual({ token });
+    });
+
+    it('should throw invalid password error', async () => {
+      jest.spyOn(model, 'findOne').mockImplementationOnce(
+        () =>
+          ({
+            select: jest.fn().mockResolvedValueOnce(mockUser),
+          } as any),
+      );
+      jest.spyOn(bcrypt, 'compare').mockResolvedValueOnce(false);
+
+      const { email, password } = mockUser;
+
+      const result = service.login({ email, password });
+
+      await expect(result).rejects.toThrow(NotFoundException);
     });
   });
 });
