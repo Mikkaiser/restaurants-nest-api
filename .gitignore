@@ -1,5 +1,6 @@
 # Security
 .env.development
+.env.test
 
 # compiled output
 /dist
