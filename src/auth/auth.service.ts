@@ -49,10 +49,15 @@ export class AuthService {
     const { email, password } = loginDto;
 
     const user = await this.userModel.findOne({ email }).select('+password');
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
     const isPasswordMatched = await bcrypt.compare(password, user.password);
 
-    if (!isPasswordMatched || !user) {
-      throw new NotFoundException('User or password incorrect');
+    if (!isPasswordMatched) {
+      throw new NotFoundException('Incorrect password');
     }
 
     const token = await APIFeatures.assignJwtToken(user.id, this.jwtService);
