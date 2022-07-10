@@ -117,7 +117,6 @@ describe('RestaurantsController (e2e)', () => {
 
   it('(DELETE) - delete restaurant by ID', () => {
     jest.setTimeout(10000);
-    console.log('restaurantCreated', restaurantCreated);
     return request(app.getHttpServer())
       .delete('/restaurants/' + restaurantCreated._id)
       .set('Authorization', 'Bearer ' + jwtToken)

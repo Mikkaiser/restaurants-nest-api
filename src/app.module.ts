@@ -13,7 +13,7 @@ import { MealModule } from './meal/meal.module';
       envFilePath: `.env.${process.env.NODE_ENV}`,
       isGlobal: true,
     }),
-    MongooseModule.forRoot(process.env.DB_URI_LOCAL),
+    MongooseModule.forRoot(process.env.DB_URI),
     RestaurantsModule,
     AuthModule,
     MealModule,
