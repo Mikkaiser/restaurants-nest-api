@@ -69,20 +69,17 @@ export class RestaurantsController {
 
   @Delete(':id')
   @UseGuards(AuthGuard())
-  async delete(
-    @Param('id') id: string,
-    @CurrentUser() user: User,
-  ): Promise<{ deleted: boolean }> {
-    const restaurant = await this.restaurantsService.findById(id);
+  async delete(@Param('id') id: string): Promise<{ deleted: boolean }> {
+    try {
+      const restaurant = await this.restaurantsService.findById(id);
 
-    const areImagesDeleted = await this.restaurantsService.deleteImages(
-      restaurant.images,
-    );
+      if (restaurant.images.length !== 0) {
+        await this.restaurantsService.deleteImages(restaurant.images);
+      }
 
-    if (areImagesDeleted) {
       await this.restaurantsService.delete(id);
       return { deleted: true };
-    } else {
+    } catch (error) {
       return { deleted: false };
     }
   }

@@ -102,4 +102,29 @@ describe('RestaurantsController (e2e)', () => {
         expect(res.body._id).toEqual(restaurantCreated._id);
       });
   });
+
+  it('(PUT) - update restaurant by ID', () => {
+    return request(app.getHttpServer())
+      .put('/restaurants/' + restaurantCreated._id)
+      .set('Authorization', 'Bearer ' + jwtToken)
+      .send({ name: 'Mikkaiser Updated' })
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toBeDefined();
+        expect(res.body.name).toEqual('Mikkaiser Updated');
+      });
+  });
+
+  it('(DELETE) - delete restaurant by ID', () => {
+    jest.setTimeout(10000);
+    console.log('restaurantCreated', restaurantCreated);
+    return request(app.getHttpServer())
+      .delete('/restaurants/' + restaurantCreated._id)
+      .set('Authorization', 'Bearer ' + jwtToken)
+      .expect(200)
+      .then((res) => {
+        expect(res.body).toBeDefined();
+        expect(res.body.deleted).toEqual(true);
+      });
+  });
 });

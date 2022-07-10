@@ -99,7 +99,7 @@ export class RestaurantsService {
     return restaurant;
   }
 
-  async deleteImages(images) {
+  async deleteImages(images): Promise<boolean> {
     const res = await APIFeatures.deleteImages(images);
     return res;
   }
