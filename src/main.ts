@@ -1,6 +1,5 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { eventNames } from 'process';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -8,6 +7,8 @@ async function bootstrap() {
 
   app.setGlobalPrefix('api');
   app.useGlobalPipes(new ValidationPipe());
+
+  console.log(process.env.DB_URI);
 
   await app.listen(process.env.API_PORT || 3000);
 }
