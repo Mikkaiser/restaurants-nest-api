@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import {
   IsEmail,
   IsEmpty,
@@ -8,14 +9,17 @@ import {
 import mongoose from 'mongoose';
 
 export class SignUpDto {
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   readonly name: string;
 
+  @ApiProperty()
   @IsString()
   @IsEmail({}, { message: 'Please enter correct email address' })
   readonly email: string;
 
+  @ApiProperty()
   @IsString()
   @IsNotEmpty()
   @MinLength(8)
