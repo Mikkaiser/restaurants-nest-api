@@ -23,8 +23,6 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  console.log(process.env.DB_URI);
-
   await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
