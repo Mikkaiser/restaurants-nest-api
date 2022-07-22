@@ -28,6 +28,8 @@
 
 A project made with the NestJS framework, a API built with MongoDB Database, and Mongoose, which is a Object Data Modeling - ODM!
 
+by - Mikkaiser :wink:
+
 ## Installation
 
 ```bash
