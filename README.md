@@ -30,6 +30,8 @@ A project made with the NestJS framework, a API built with MongoDB Database, and
 
 by - Mikkaiser :wink:
 
+[See API documentation here](https://restaurant-api-nest.herokuapp.com/docs/)
+
 ## Installation
 
 ```bash
