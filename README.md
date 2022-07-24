@@ -26,7 +26,7 @@
 
 [Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
 
-A project made with the NestJS framework, a API built with MongoDB Database, and Mongoose, which is a Object Data Modeling - ODM!
+A project made with the NestJS framework, an API built with MongoDB Database, and Mongoose!
 
 by - Mikkaiser :wink:
 
